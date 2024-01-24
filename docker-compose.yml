@@ -1,0 +1,15 @@
+version: '3'
+
+services:
+  mysql-java-jdbc:
+    image: mysql:8.0
+    container_name: mysql-java-jdbc
+    environment:
+      MYSQL_ROOT_PASSWORD: 12345
+      MYSQL_DATABASE: mysql-java
+    volumes:
+      - ./data:/var/lib/mysql
+    ports:
+      - "3306:3306"
+
+# user: root
