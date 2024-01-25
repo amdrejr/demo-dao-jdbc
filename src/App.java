@@ -3,13 +3,14 @@ import java.util.Date;
 import java.util.List;
 
 import model.dao.DaoFactory;
+import model.dao.DepartmentDao;
 import model.dao.SellerDao;
 import model.entities.Department;
 import model.entities.Seller;
 
 public class App {
     public static void main(String[] args)  {
-       
+        // SELLERS
         SellerDao sellerDao = DaoFactory.createSellerDao();
 
         System.out.println("--- Teste 1: Seller findById ---");
@@ -38,6 +39,28 @@ public class App {
 
         System.out.println("\n--- Teste 6: Seller delete ---");
         sellerDao.deleteById(5);
+
+
+        System.out.println("\nDEPARTMENTS");
+        DepartmentDao depDao = DaoFactory.createDepartmentDao();
+
+        System.out.println("\n--- Teste 1: Department findAll ---");
+        List<Department> deps = depDao.findAll();
+        deps.forEach(System.out::println);
+
+        System.out.println("\n--- Teste 2: Department findById ---");
+        System.out.println(depDao.findById(2));
+    
+        System.out.println("\n--- Teste 3: Department insert ---");
+        Department insertDep = new Department(null, "Home items");
+        depDao.insert(insertDep);
+
+        System.out.println("\n--- Teste 4: Department update ---");
+        Department upDep = new Department(1, "Informatic");
+        depDao.update(upDep);
+
+        System.out.println("\n--- Teste 5: Department delete ---");
+        depDao.deleteById(6);
 
     }
 }
