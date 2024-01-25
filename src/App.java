@@ -8,13 +8,10 @@ import model.entities.Seller;
 public class App {
     public static void main(String[] args)  {
        
-        Department dp = new Department(1, "TI");
-
-        Seller seller = new Seller(30, "Pedro", "pedro@email.com", new Date(0), 2000d, dp);
-
         SellerDao sellerDao = DaoFactory.createSellerDao();
 
-        System.out.println(dp);
+        Seller seller = sellerDao.findById(2);
+
         System.out.println(seller);
 
     }
