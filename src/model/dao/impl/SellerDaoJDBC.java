@@ -6,7 +6,6 @@ import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.util.List;
 
-import db.DB;
 import db.DbException;
 import model.dao.SellerDao;
 import model.entities.Department;
@@ -34,37 +33,29 @@ public class SellerDaoJDBC implements SellerDao {
 
     @Override
     public Seller findById(Integer id) {
-        PreparedStatement st = null;
-        ResultSet rs = null;
-
-        try {
-            st = conn.prepareStatement(
+        // try with resources -> dá .close() automaticamente em seus params ao finalizar o try
+        try ( PreparedStatement st = conn.prepareStatement(
                 "SELECT seller.*, department.Name as DepName " +
                 "FROM seller INNER JOIN department " +
                 "ON seller.DepartmentId = department.Id " +
-                "WHERE seller.id = ?"
-            );
+                "WHERE seller.id = ?" ) ) {
 
             st.setInt(1, id);
-            rs = st.executeQuery();
+            
+            // try with resources
+            try (ResultSet rs = st.executeQuery()) {
+                if (rs.next()) {
+                    // Department dep = new Department(rs.getInt("DepartmentId"), rs.getString("DepName"));
+                    Department dep = instantiateDepartment(rs);
+                    return instantiateSeller(rs, dep);   
+                }
+            } 
 
-            if (rs.next()) {
-                Department dep = new Department(rs.getInt("DepartmentId"), rs.getString("DepName"));
-                return new Seller(
-                    rs.getInt("Id"), 
-                    rs.getString("Name"), 
-                    rs.getString("Email"), 
-                    rs.getDate("BirthDate"), 
-                    rs.getDouble("BaseSalary"), 
-                    dep);
-            }
             return null;
+
         } catch (SQLException e) {
             throw new DbException(e.getMessage());
-        } finally {
-            DB.closeResultSet(rs);
-            DB.closeStatement(st);
-        }  
+        } 
     }
 
     @Override
@@ -77,6 +68,24 @@ public class SellerDaoJDBC implements SellerDao {
     public void update(Seller obj) {
         // TODO Auto-generated method stub
         
+    }
+
+    private Department instantiateDepartment(ResultSet rs) throws SQLException {
+        return new Department(
+            rs.getInt("DepartmentId"), 
+            rs.getString("DepName")
+        );
+    }
+
+    private Seller instantiateSeller(ResultSet rs, Department dep) throws SQLException {
+        return new Seller(
+            rs.getInt("Id"), 
+            rs.getString("Name"), 
+            rs.getString("Email"), 
+            rs.getDate("BirthDate"), 
+            rs.getDouble("BaseSalary"), 
+            dep
+        );
     }
     
 }

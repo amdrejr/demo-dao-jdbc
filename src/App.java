@@ -1,8 +1,6 @@
-import java.sql.Date;
 
 import model.dao.DaoFactory;
 import model.dao.SellerDao;
-import model.entities.Department;
 import model.entities.Seller;
 
 public class App {
@@ -10,8 +8,8 @@ public class App {
        
         SellerDao sellerDao = DaoFactory.createSellerDao();
 
-        Seller seller = sellerDao.findById(2);
-
+        System.out.println("--- Teste 1: Seller findById ---");
+        Seller seller = sellerDao.findById(4);
         System.out.println(seller);
 
     }
